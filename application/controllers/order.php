@@ -12,6 +12,7 @@ class Order extends MY_Controller {
       'customer_name' => '',
       'order_name' => '',
       'shop' => $this->_default_store,
+      'collect' => '',
       'page_size' => $this->config->item('PAGE_SIZE'),
       'created_at' => '',
       'sort_field' => 'created_at',
@@ -59,6 +60,17 @@ class Order extends MY_Controller {
     // Init the search value
     $this->initSearchValue();
 
+    $this->load->model( 'Collection_model' );
+
+    //Collection List
+    $arrCondition =  array();
+    $collect_arr = array();
+    $collect_arr[0] = '';
+    $temp_arr =  $this->Collection_model->getList( $arrCondition );
+    $temp_arr = $temp_arr->result();
+    foreach( $temp_arr as $collect ) $collect_arr[ $collect->collection_id ] = $collect->title;
+    $data['arrCollectionList'] = $collect_arr;
+
     $created_at = $this->_searchVal['created_at'];
     if($created_at == '')
     {
@@ -66,6 +78,7 @@ class Order extends MY_Controller {
     }
     // Get data
     $arrCondition =  array(
+       'collect' => $this->_searchVal['collect'],
        'customer_name' => $this->_searchVal['customer_name'],
        'order_name' => $this->_searchVal['order_name'],
        'page_number' => $page,
@@ -76,7 +89,7 @@ class Order extends MY_Controller {
 
     $this->Order_model->rewriteParam($this->_default_store);
     $data['query'] =  $this->Order_model->getList( $arrCondition );
-    $data['total_count'] = sizeof($data['query']->result());//$this->Order_model->getTotalCount();
+    $data['total_count'] = $this->Order_model->getTotalCount();
     $data['page'] = $page;
 
       //var_dump($data['query']);exit;
@@ -119,10 +132,14 @@ class Order extends MY_Controller {
 
     $param = 'status=any&limit=250';
     if( $last_day != '' ) $param .= '&processed_at_min=' . $last_day ;
-    $action = 'orders.json?' . $param;
+      $action = 'orders.json?' . $param;
+
+    //$action = 'smart_collections.json';
 
     // Retrive Data from Shop
     $orderInfo = $this->Shopify_model->accessAPI( $action );
+
+    //var_dump($orderInfo);exit;
 
     if($orderInfo != null){
         foreach( $orderInfo->orders as $order )

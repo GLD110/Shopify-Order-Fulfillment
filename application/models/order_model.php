@@ -62,8 +62,17 @@ class Order_model extends Master_model
         if( !empty( $arrCondition['order_name'] ) ) $where["order_name LIKE '%" . str_replace( "'", "\\'", $arrCondition['order_name'] ) . "%'"] = '';
         if( !empty( $arrCondition['created_at'] ) ) $where["created_at LIKE '" . str_replace( "'", "\\'", $arrCondition['created_at'] ) . "%'"] = '';
 
+        // Get the count of records
+        foreach( $where as $key => $val )
+        if( $val == '' )
+            $this->db->where( $key );
+        else
+            $this->db->where( $key, $val );
+        $query = $this->db->get( $this->_tablename);
+        $this->_total_count = $query->num_rows();
+
         // Select fields
-        $select = !empty( $arrCondition['is_all'] ) ? '*' : "id, order_id, order_name, email, created_at, customer_name, amount, fulfillment_status, num_products, country, product_name, financial_status, sku";
+        $select = !empty( $arrCondition['is_all'] ) ? '*' : "id, order_id, order_name, email, created_at, customer_name, amount, fulfillment_status, num_products, country, product_name, financial_status, sku, note";
         $this->db->select( $select );
 
         // Sort
@@ -230,6 +239,7 @@ class Order_model extends Master_model
                     'data' => base64_encode( json_encode( $line_item ) ),
                     'financial_status' => empty($order->financial_status) ? '' :  $order->financial_status,
                     'sku' => $line_item->sku,
+                    'note' => $order->note,
                     'exported_status' => 0
                 );
 
@@ -273,6 +283,7 @@ class Order_model extends Master_model
                     'data' => base64_encode( json_encode( $line_item ) ),
                     'financial_status' => empty($order->financial_status) ? '' :  $order->financial_status,
                     'sku' => $line_item->sku,
+                    'note' => $order->note,
                     'exported_status' => 0
                 );
 
