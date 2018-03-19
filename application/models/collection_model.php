@@ -97,6 +97,7 @@ class Collection_model extends Master_model
           // If the title is not the same, update it
           $data = array(
             'title' => $collection->title,
+            'product_ids' => $collection->product_ids,
           );
           parent::update( $row->id, $data );
         }
@@ -109,39 +110,12 @@ class Collection_model extends Master_model
         'collection_id' => $collection->id,
         'title' => $collection->title,
         'body_html' => $collection->body_html,
+        'product_ids' => $collection->product_ids,
         'updated_at' =>  str_replace('T', ' ', $collection->updated_at)
       );
       parent::add( $data );
     }
 
-  /*  if( isset( $this->_arrCollection[ $collection->id ] ) )
-    {
-      // If collection is exist
-      if( $this->_arrCollection[ $collection->id ]['title'] == $collection->title )
-      {
-        // If the collection is the same, skip it
-        return;
-      }
-      else
-      {
-        // If the title is not the same, update it
-        $data = array(
-          'title' => $collection->title,
-        );
-        parent::update( $this->_arrCollection[ $collection->id ]['id'], $data );
-      }
-    }
-    else
-    {
-      // If collection is not exist, add it
-      $data = array(
-        'collection_id' => $collection->id,
-        'title' => $collection->title,
-        'body_html' => $collection->body_html,
-        'updated_at' =>  str_replace('T', ' ', $collection->updated_at)
-      );
-      parent::add( $data );
-    }*/
     return true;
   }
 

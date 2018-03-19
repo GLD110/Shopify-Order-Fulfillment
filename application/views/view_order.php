@@ -57,8 +57,11 @@ $summary = 'Showing ' . ( $page + 1 ) . ' to ' . ( $page + $sel_page_size > $tot
               <label style="display: none">Store</label>&nbsp;&nbsp;
               <?PHP echo form_dropdown('sel_shop', $arrStoreList, $sel_shop, 'id="sel_shop" class="sel_shop form-control input-group-sm"' ); ?>
               &nbsp;&nbsp;&nbsp;<style>.sel_shop { display: none !important; }</style>
-              <label>Collection</label>&nbsp;:&nbsp;
-              <?PHP echo form_dropdown('sel_collect', $arrCollectionList, $sel_collect, 'id="sel_collect" class="form-control input-group-sm"' ); ?>
+              <label style="display: none">Collection</label>&nbsp;&nbsp;
+              <?PHP echo form_dropdown('sel_collect', $arrCollectionList, $sel_collect, 'id="sel_collect" class=" sel_collect form-control input-group-sm"' ); ?>
+              &nbsp;&nbsp;&nbsp;<style>.sel_collect { display: none !important; }</style>
+              <label>Product Name</label>&nbsp;:&nbsp;
+              <input type = 'text' class="form-control input-group-sm" id = 'sel_product_name' name = 'sel_product_name' value = "<?PHP echo $sel_product_name; ?>" style = "width:90px;" >
               &nbsp;&nbsp;&nbsp;
               <label>Order Name</label>&nbsp;:&nbsp;
               <input type = 'text' class="form-control input-group-sm" id = 'sel_order_name' name = 'sel_order_name' value = "<?PHP echo $sel_order_name; ?>" style = "width:90px;" >
@@ -113,7 +116,7 @@ $summary = 'Showing ' . ( $page + 1 ) . ' to ' . ( $page + $sel_page_size > $tot
                     </th>
                     <th class = "text-center" >No.</th>
                     <th class = "text-center" ><a href = "javascript:sort('order_name');" >Order Name</a></th>
-                    <th class = "text-center" ><a href = "javascript:sort('order_id');" >Order ID</a></th>
+                    <th class = "text-center" style="display: none;"><a href = "javascript:sort('order_id');" >Order ID</a></th>
                     <th class = "text-center" ><a href = "javascript:sort('product_name');" >Product Name</a></th>
                     <th class = "text-center" ><a href = "javascript:sort('customer_name');" >Customer</a></th>
                     <th class = "text-center" ><a href = "javascript:sort('email');" >email</a></th>
@@ -141,7 +144,7 @@ $summary = 'Showing ' . ( $page + 1 ) . ' to ' . ( $page + $sel_page_size > $tot
                         <?php echo $sno; ?>
                     </td>
                     <td><?=$row->order_name ?></td>
-                    <td><?=$row->order_id ?></td>
+                    <td style="display: none;"><?=$row->order_id ?></td>
                     <td><?=$row->product_name ?></td>
                     <td><?=$row->customer_name ?></td>
                     <td><?=$row->email ?></td>

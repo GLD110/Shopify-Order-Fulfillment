@@ -9,6 +9,7 @@ class Order extends MY_Controller {
 
     // Define the search values
     $this->_searchConf  = array(
+      'product_name' => '',
       'customer_name' => '',
       'order_name' => '',
       'shop' => $this->_default_store,
@@ -78,7 +79,7 @@ class Order extends MY_Controller {
     }
     // Get data
     $arrCondition =  array(
-       'collect' => $this->_searchVal['collect'],
+       'product_name' => $this->_searchVal['product_name'],
        'customer_name' => $this->_searchVal['customer_name'],
        'order_name' => $this->_searchVal['order_name'],
        'page_number' => $page,
@@ -88,11 +89,45 @@ class Order extends MY_Controller {
     );
 
     $this->Order_model->rewriteParam($this->_default_store);
+
+    /**Be sure product is in the selct collection via API request,
+    better solution will be needed in the future**/
+    /*$this->load->model( 'Process_model' );
+    if(empty($shop))
+        $shop = $this->_default_store;
+
+    $this->load->model( 'Shopify_model' );
+    $this->Shopify_model->setStore( $shop, $this->_arrStoreList[$shop]->app_id, $this->_arrStoreList[$shop]->app_secret );
+
+    $collect = $this->_searchVal['collect'];
+    $q_orders =  $this->Order_model->getList( $arrCondition );
+    $orders = $q_orders->result();
+
+    if($collect == 0)
+    {
+      $r_orders = $orders;
+    }
+    else{
+      $r_orders = array();
+      foreach($orders as $order)
+      {
+        $action = 'collects.json?' . 'collection_id=' . $collect . '&product_id=' . $order->product_id;
+        $CollectInfo = $this->Shopify_model->accessAPI( $action );
+        if(sizeof($CollectInfo->collects) != 0)
+          array_push($r_orders, $order);
+      }
+    }
+
+    $data['query'] = $r_orders;
+    $data['total_count'] = $this->Order_model->getTotalCount() - sizeof($orders) + sizeof($r_orders);
+    $data['page'] = $page;
+    */
+    
     $data['query'] =  $this->Order_model->getList( $arrCondition );
     $data['total_count'] = $this->Order_model->getTotalCount();
     $data['page'] = $page;
 
-      //var_dump($data['query']);exit;
+    //var_dump($data['query']);exit;
 
     // Define the rendering data
     $data = $data + $this->setRenderData();

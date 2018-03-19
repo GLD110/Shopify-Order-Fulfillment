@@ -58,6 +58,7 @@ class Order_model extends Master_model
         $arrCondition['created_at'] = date("Y-m-d", strtotime($originalDate));
 
         $where['shop'] = $this->_shop;
+        if( !empty( $arrCondition['product_name'] ) ) $where["product_name LIKE '%" . str_replace( "'", "\\'", $arrCondition['product_name'] ) . "%'"] = '';
         if( !empty( $arrCondition['customer_name'] ) ) $where["customer_name LIKE '%" . str_replace( "'", "\\'", $arrCondition['customer_name'] ) . "%'"] = '';
         if( !empty( $arrCondition['order_name'] ) ) $where["order_name LIKE '%" . str_replace( "'", "\\'", $arrCondition['order_name'] ) . "%'"] = '';
         if( !empty( $arrCondition['created_at'] ) ) $where["created_at LIKE '" . str_replace( "'", "\\'", $arrCondition['created_at'] ) . "%'"] = '';
@@ -72,7 +73,7 @@ class Order_model extends Master_model
         $this->_total_count = $query->num_rows();
 
         // Select fields
-        $select = !empty( $arrCondition['is_all'] ) ? '*' : "id, order_id, order_name, email, created_at, customer_name, amount, fulfillment_status, num_products, country, product_name, financial_status, sku, note";
+        $select = !empty( $arrCondition['is_all'] ) ? '*' : "id, order_id, order_name, email, created_at, customer_name, amount, fulfillment_status, num_products, country, product_id, variant_id, product_name, financial_status, sku, note";
         $this->db->select( $select );
 
         // Sort
@@ -230,6 +231,8 @@ class Order_model extends Master_model
                     'customer_name' => $customer_name,
                     'email' => $order->email,
                     'product_name' => $line_item->name,
+                    'product_id' => $line_item->product_id,
+                    'variant_id' => $line_item->variant_id,
                     'order_name' => $order->name,
                     'created_at' =>  str_replace('T', ' ', $order->created_at) ,
                     'amount' => $line_item->price,
@@ -274,6 +277,8 @@ class Order_model extends Master_model
                     'customer_name' => $customer_name,
                     'email' => $order->email,
                     'product_name' => $line_item->name,
+                    'product_id' => $line_item->product_id,
+                    'variant_id' => $line_item->variant_id,
                     'order_name' => $order->name,
                     'created_at' =>  str_replace('T', ' ', $order->created_at) ,
                     'amount' => $line_item->price,

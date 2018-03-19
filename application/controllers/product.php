@@ -104,6 +104,13 @@ class Product extends MY_Controller {
     {
       foreach( $collectionInfo->smart_collections as $collection )
       {
+        /*$collection_productIDs = $this->Shopify_model->accessAPI( 'products.json?fields=id&collection_id=' . $collection->id );
+        $c_pIDs = '';
+        foreach($collection_productIDs->products as $c_p)
+        {
+          $c_pIDs = $c_pIDs . ',' . $c_p->id;
+        }
+        $collection->product_ids = $c_pIDs;*/
         $this->Collection_model->addCollection( $collection );
       }
     }
