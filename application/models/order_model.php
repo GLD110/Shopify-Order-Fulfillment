@@ -303,6 +303,17 @@ class Order_model extends Master_model
     }
 
     /**
+    * Get one Order info from Order_Id
+    *
+    * @param mixed $order_id
+    */
+    public function getOrderfromId ( $order_id )
+    {
+      $query = parent::getList('order_id = \'' . $order_id . '\'' );
+      retutn $query->result();
+    }
+
+    /**
     * Clear the download record
     *
     * @param mixed $file_no

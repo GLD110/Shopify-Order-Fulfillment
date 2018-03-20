@@ -122,7 +122,7 @@ class Order extends MY_Controller {
     $data['total_count'] = $this->Order_model->getTotalCount() - sizeof($orders) + sizeof($r_orders);
     $data['page'] = $page;
     */
-    
+
     $data['query'] =  $this->Order_model->getList( $arrCondition );
     $data['total_count'] = $this->Order_model->getTotalCount();
     $data['page'] = $page;
@@ -184,5 +184,132 @@ class Order extends MY_Controller {
     }
 
     echo 'success';
+  }
+
+  public function syncPMI( $order_id )
+  {
+    $this->Order_model->rewriteParam($this->_default_store);
+    $arr_order =  $this->Order_model->getOrderfromId( $order_id );
+    $order = $arr_order[0];
+    $url = $this->config->item('pmi_path');
+    $shared_secret = $this->config->item('shared_secret');
+
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>
+            <cXML version="1.2.005" xml:lang="en-US" payloadID="f0d4c4cad2768467e774a20328e9fa141106242345@YourName.com" timestamp="2005-01-20T09:32:25">
+               <Header>
+                  <From>
+                     <Credential domain="DUNS">
+                        <Identity>OfficeMax</Identity>
+                     </Credential>
+                     <Credential domain="CompanyName">
+                        <Identity>OfficeMax</Identity>
+                     </Credential>
+                  </From>
+                  <To>
+                     <Credential domain="CompanyName">
+                        <Identity>Colorcentric</Identity>
+                     </Credential>
+                  </To>
+                  <Sender>
+                     <Credential domain="DUNS">
+                        <Identity>OfficeMax</Identity>
+                        <SharedSecret>YourPassword</SharedSecret>
+                     </Credential>
+                  </Sender>
+               </Header>
+               <Request deploymentMode="production">
+                  <OrderRequest>
+                     <OrderRequestHeader orderID="12345678-1" orderDate="2005-01-20T09:32:25" type="new">
+                        <BillTo>
+                           <Address addressID="12345">
+                              <Name xml:lang="en-US">Your Name, Inc.</Name>
+                              <PostalAddress name="Your Name, Inc.">
+                                 <DeliverTo>Billing</DeliverTo>
+                                 <Street>20 1st Ave.</Street>
+                                 <Street />
+                                 <City>New York</City>
+                                 <State>NY</State>
+                                 <PostalCode>10010</PostalCode>
+                                 <Country isoCountryCode="US">US</Country>
+                              </PostalAddress>
+                              <Phone>
+                                 <TelephoneNumber>
+                                    <CountryCode isoCountryCode="" />
+                                    <AreaOrCityCode />
+                                    <Number />
+                                 </TelephoneNumber>
+                              </Phone>
+                           </Address>
+                        </BillTo>
+                        <Shipping>
+                           <Money currency="USD" />
+                           <Description xml:lang="en-US" />
+                        </Shipping>
+                        <Tax>
+                           <Money currency="USD" />
+                           <Description xml:lang="en-US" />
+                        </Tax>
+                        <Comments xml:lang="en-US" />
+                     </OrderRequestHeader>
+                     <ItemOut lineNumber="1" quantity="10" requestedDeliveryDate="">
+                        <ItemID>
+                           <SupplierPartID>P600</SupplierPartID>
+                           <SupplierPartAuxiliaryID>Joe Simth</SupplierPartAuxiliaryID>
+                        </ItemID>
+                        <ItemDetail>
+                           <UnitPrice>
+                              <Money currency="USD">1.99</Money>
+                           </UnitPrice>
+                           <Description xml:lang="en-US">Your Name Duplex Business Cards</Description>
+                           <UnitOfMeasure>EA</UnitOfMeasure>
+                           <Classification domain="" />
+                           <URL>http://www.YourName.com/files/JoeSmith.pdf</URL>
+                           <Extrinsic name="quantityMultiplier">50</Extrinsic>
+                           <Extrinsic name="Pages">88</Extrinsic>
+                           <Extrinsic name="endCustomerOrderID">Your Customers PO Number</Extrinsic>
+                           <Extrinsic name="requestedShipper">DHL Next Day 3:00 pm</Extrinsic>
+                           <Extrinsic name="requestedShippingAccount">12345678</Extrinsic>
+                        </ItemDetail>
+                        <ShipTo>
+                           <Address addressID="0001">
+                              <Name xml:lang="en-US">Your Name</Name>
+                              <PostalAddress name="">
+                                 <DeliverTo>Joe Smith</DeliverTo>
+                                 <Street>100 Oak Tree Road</Street>
+                                 <Street>Suite 315</Street>
+                                 <City>Pittsburg</City>
+                                 <State>PA</State>
+                                 <PostalCode>20998</PostalCode>
+                                 <Country isoCountryCode="US">US</Country>
+                              </PostalAddress>
+                              <Phone>
+                                 <TelephoneNumber>
+                                    <Number>6549889989</Number>
+                                 </TelephoneNumber>
+                              </Phone>
+                           </Address>
+                        </ShipTo>
+                     </ItemOut>
+                  </OrderRequest>
+               </Request>
+            </cXML>'
+  }
+
+  private function sendXmlOverPost($url, $xml) {
+  	$ch = curl_init();
+  	curl_setopt($ch, CURLOPT_URL, $url);
+
+  	// For xml, change the content-type.
+  	curl_setopt ($ch, CURLOPT_HTTPHEADER, Array("Content-Type: text/xml"));
+
+  	curl_setopt($ch, CURLOPT_POST, 1);
+  	curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+
+  	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // ask for results to be returned
+
+  	// Send to remote and return data to caller.
+  	$result = curl_exec($ch);
+  	curl_close($ch);
+  	return $result;
   }
 }

@@ -16,11 +16,11 @@
 */
 if( ENVIRONMENT == 'development'){
   $config['base_url']  = 'http://localhost:9080/shopify-order-fulfillment/';
-  $config['app_path']    = 'D:/www/Shopify/app_butler/';
+  $config['app_path']  = 'D:/www/Shopify/app_butler/';
 }
 if( ENVIRONMENT == 'production'){
-  $config['base_url']    = 'http://s626233805.websitehome.co.uk/app_butlerandhill';
-  $config['app_path']    = 'E:/www/app_butler/';
+  $config['base_url']  = '';
+  $config['app_path']  = '';
 }
 
 /*
@@ -405,6 +405,10 @@ $config['PUBLIC_MODE'] = false;
 $config['USE_REDIRECT'] = true;
 $config['PRIVATE_SHOP'] = 'the-print-emporium.myshopify.com';
 $config['PRIVATE_API_URL'] = 'https://c5304620c325fdf4cb204ed3a8243a57:f1ebea462dd2da86f415132f62fa7118@the-print-emporium.myshopify.com/admin/';   //Dev Shop
+
+// PMI Credentials
+$config['pmi_path']  =  'http://orders.printernet.com:8080/emporiumtest/default.emporiumtest'
+$config['shared_secret'] = 'eMdh78Ki7UjjU9x';
 
 // Constants
 $config['CONST_EMPTY_DATE'] = '0000-00-00 00:00:00';
