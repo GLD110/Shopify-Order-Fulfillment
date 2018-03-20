@@ -174,7 +174,7 @@ class Order extends MY_Controller {
     // Retrive Data from Shop
     $orderInfo = $this->Shopify_model->accessAPI( $action );
 
-    //var_dump($orderInfo);exit;
+    //var_dump($orderInfo->orders[2]);exit;
 
     if($orderInfo != null){
         foreach( $orderInfo->orders as $order )
@@ -186,23 +186,29 @@ class Order extends MY_Controller {
     echo 'success';
   }
 
-  public function syncPMI( $order_id )
+  public function syncPMI()
   {
+    $order_id = $this->input->get('order_id');
     $this->Order_model->rewriteParam($this->_default_store);
     $arr_order =  $this->Order_model->getOrderfromId( $order_id );
     $order = $arr_order[0];
     $url = $this->config->item('pmi_path');
     $shared_secret = $this->config->item('shared_secret');
+    $your_name = $this->config->item('your_name');
+    $created_at = $order->created_at;
+    $billing_address = json_decode( base64_decode( $order->billing_address ));
+
+        var_dump( json_decode( base64_decode( $order->billing_address )) );exit;
 
     $xml = '<?xml version="1.0" encoding="UTF-8"?>
-            <cXML version="1.2.005" xml:lang="en-US" payloadID="f0d4c4cad2768467e774a20328e9fa141106242345@YourName.com" timestamp="2005-01-20T09:32:25">
+            <cXML version="1.2.005" xml:lang="en-US" payloadID="f0d4c4cad2768467e774a20328e9fa141106242345@"' . $your_name . '".com" timestamp="' . $created_at . '">
                <Header>
                   <From>
                      <Credential domain="DUNS">
-                        <Identity>OfficeMax</Identity>
+                        <Identity>' . $your_name . '</Identity>
                      </Credential>
                      <Credential domain="CompanyName">
-                        <Identity>OfficeMax</Identity>
+                        <Identity>' . $your_name . '</Identity>
                      </Credential>
                   </From>
                   <To>
@@ -212,14 +218,14 @@ class Order extends MY_Controller {
                   </To>
                   <Sender>
                      <Credential domain="DUNS">
-                        <Identity>OfficeMax</Identity>
-                        <SharedSecret>YourPassword</SharedSecret>
+                        <Identity>' . $your_name . '</Identity>
+                        <SharedSecret>' . $shared_secret . '</SharedSecret>
                      </Credential>
                   </Sender>
                </Header>
                <Request deploymentMode="production">
                   <OrderRequest>
-                     <OrderRequestHeader orderID="12345678-1" orderDate="2005-01-20T09:32:25" type="new">
+                     <OrderRequestHeader orderID="' . $order_id . '" orderDate="' . $created_at . '" type="new">
                         <BillTo>
                            <Address addressID="12345">
                               <Name xml:lang="en-US">Your Name, Inc.</Name>
@@ -292,7 +298,7 @@ class Order extends MY_Controller {
                      </ItemOut>
                   </OrderRequest>
                </Request>
-            </cXML>'
+            </cXML>';
   }
 
   private function sendXmlOverPost($url, $xml) {

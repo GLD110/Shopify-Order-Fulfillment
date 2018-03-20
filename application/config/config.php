@@ -407,8 +407,9 @@ $config['PRIVATE_SHOP'] = 'the-print-emporium.myshopify.com';
 $config['PRIVATE_API_URL'] = 'https://c5304620c325fdf4cb204ed3a8243a57:f1ebea462dd2da86f415132f62fa7118@the-print-emporium.myshopify.com/admin/';   //Dev Shop
 
 // PMI Credentials
-$config['pmi_path']  =  'http://orders.printernet.com:8080/emporiumtest/default.emporiumtest'
+$config['pmi_path']  =  'http://orders.printernet.com:8080/emporiumtest/default.emporiumtest';
 $config['shared_secret'] = 'eMdh78Ki7UjjU9x';
+$config['your_name'] = 'emporiumtest';
 
 // Constants
 $config['CONST_EMPTY_DATE'] = '0000-00-00 00:00:00';

@@ -156,7 +156,7 @@ $summary = 'Showing ' . ( $page + 1 ) . ' to ' . ( $page + $sel_page_size > $tot
                     <td><?=$row->created_at ?></td>
                     <td><?=$row->financial_status ?></td>
                     <td><?=$row->sku ?></td>
-                    <td><button type="button" class="btn">Sync</button></td>
+                    <td><button type="button" class="btn btn_pmi" style="background: darkgrey" data-order-id="<?=$row->order_id ?>">Sync</button></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -284,4 +284,24 @@ function sort( field )
   $('#frmSearch').submit();
 }
 
+// Sync Order with PMI
+$('.btn_pmi').click(function(){
+  $.ajax({
+    url: '<?php echo base_url($this->config->item('index_page') . '/order/syncPMI?') ?>'  + 'order_id=' + $(this).attr('data-order-id'),
+    type: 'GET'
+  }).done(function(data) {
+    console.log( data );
+    if( data == 'success' )
+    {
+      $(this).text( 'Synced' );
+      $(this).css( 'background', 'grey' );
+    }
+    else
+    {
+      $(this).text( 'Sync' );
+      $(this).css( 'background', 'red' );
+      alert(data);
+    }
+  });
+});
 </script>

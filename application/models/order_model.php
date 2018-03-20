@@ -225,6 +225,7 @@ class Order_model extends Master_model
             // Get the number of map products
             foreach( $order->line_items as $line_item )
             {
+              if(($line_item->product_id != null) && isset($order->billing_address) && isset($order->shipping_address)){
                 // Insert data
                 $data = array(
                     'order_id' => $line_item->id,
@@ -240,6 +241,9 @@ class Order_model extends Master_model
                     'num_products' => $line_item->quantity,
                     'fulfillment_status' => empty($line_item->fulfillment_status) ? '' :  $line_item->fulfillment_status,
                     'data' => base64_encode( json_encode( $line_item ) ),
+                    'shipping_lines' => base64_encode( json_encode( $order->shipping_lines ) ),
+                    'billing_address' => base64_encode( json_encode( $order->billing_address ) ),
+                    'shipping_address' => base64_encode( json_encode( $order->shipping_address ) ),
                     'financial_status' => empty($order->financial_status) ? '' :  $order->financial_status,
                     'sku' => $line_item->sku,
                     'note' => $order->note,
@@ -257,6 +261,7 @@ class Order_model extends Master_model
                     $id = $old_order->id;
                     parent::update( $id, $data );
                 }
+              }
             }
 
             return true;
@@ -271,6 +276,7 @@ class Order_model extends Master_model
             // Get the number of map products
             foreach( $order->line_items as $line_item )
             {
+              if(($line_item->product_id != null) && isset($order->billing_address) && isset($order->shipping_address)){
                 // Insert data
                 $data = array(
                     'order_id' => $line_item->id,
@@ -286,6 +292,9 @@ class Order_model extends Master_model
                     'num_products' => $line_item->quantity,
                     'fulfillment_status' => empty($line_item->fulfillment_status) ? '' :  $line_item->fulfillment_status,
                     'data' => base64_encode( json_encode( $line_item ) ),
+                    'shipping_lines' => base64_encode( json_encode( $order->shipping_lines ) ),
+                    'billing_address' => base64_encode( json_encode( $order->billing_address ) ),
+                    'shipping_address' => base64_encode( json_encode( $order->shipping_address ) ),
                     'financial_status' => empty($order->financial_status) ? '' :  $order->financial_status,
                     'sku' => $line_item->sku,
                     'note' => $order->note,
@@ -296,6 +305,7 @@ class Order_model extends Master_model
                 if($query->num_rows() == 0){
                     parent::add( $data );
                 }
+              }
             }
 
             return true;
@@ -310,7 +320,7 @@ class Order_model extends Master_model
     public function getOrderfromId ( $order_id )
     {
       $query = parent::getList('order_id = \'' . $order_id . '\'' );
-      retutn $query->result();
+        return $query->result();
     }
 
     /**
