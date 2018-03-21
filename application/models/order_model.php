@@ -247,6 +247,7 @@ class Order_model extends Master_model
                     'financial_status' => empty($order->financial_status) ? '' :  $order->financial_status,
                     'sku' => $line_item->sku,
                     'note' => $order->note,
+                    'currency' => $order->currency,
                     'exported_status' => 0
                 );
 
@@ -298,6 +299,7 @@ class Order_model extends Master_model
                     'financial_status' => empty($order->financial_status) ? '' :  $order->financial_status,
                     'sku' => $line_item->sku,
                     'note' => $order->note,
+                    'currency' => $order->currency,
                     'exported_status' => 0
                 );
 
