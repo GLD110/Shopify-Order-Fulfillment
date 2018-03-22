@@ -221,106 +221,6 @@ class Order extends MY_Controller {
     if(isset( $shipping_lines->tax_lines['price'] ))
       $tax_rate = $shipping_lines->tax_lines['rate'];
 
-    $sample_xml = '<?xml version="1.0" encoding="UTF-8"?>
-<cXML version="1.2.005" xml:lang="en-US" payloadID="f0d4c4cad2768467e774a20328e9fa141106242345@emporiumtest.com" timestamp="2018-03-20T16:05:21+11:00">
-   <Header>
-      <From>
-         <Credential domain="DUNS">
-            <Identity>emporiumtest</Identity>
-         </Credential>
-         <Credential domain="CompanyName">
-            <Identity>emporiumtest</Identity>
-         </Credential>
-      </From>
-      <To>
-         <Credential domain="CompanyName">
-            <Identity>Colorcentric</Identity>
-         </Credential>
-      </To>
-      <Sender>
-         <Credential domain="DUNS">
-            <Identity>emporiumtest</Identity>
-            <SharedSecret>eMdh78Ki7UjjU9x</SharedSecret>
-         </Credential>
-      </Sender>
-   </Header>
-   <Request deploymentMode="production">
-      <OrderRequest>
-         <OrderRequestHeader orderID="814826258492" orderDate="2018-03-20T16:05:21+11:00" type="new">
-            <BillTo>
-               <Address addressID="address1">
-                  <Name xml:lang="en-US">Paper occasions</Name>
-                  <PostalAddress name="Paper occasions">
-                     <DeliverTo>Billing</DeliverTo>
-                     <Street>202 upper heidelberg road  ivanhoe</Street>
-                     <Street />
-                     <City>Melbourne</City>
-                     <State>VIC</State>
-                     <PostalCode>3079</PostalCode>
-                     <Country isoCountryCode="AU">AU</Country>
-                  </PostalAddress>
-                  <Phone>
-                     <TelephoneNumber>
-                        <CountryCode isoCountryCode="03">03</CountryCode>
-                        <AreaOrCityCode />
-                        <Number>03 9497 1370</Number>
-                     </TelephoneNumber>
-                  </Phone>
-               </Address>
-            </BillTo>
-            <Shipping>
-               <Money currency="AUD">0.00</Money>
-               <Description xml:lang="en-US">Free Shipping over $150</Description>
-            </Shipping>
-            <Tax>
-               <Money currency="AUD" />
-               <Description xml:lang="en-US">rate:</Description>
-            </Tax>
-            <Comments xml:lang="en-US" />
-         </OrderRequestHeader>
-         <ItemOut lineNumber="1" quantity="1" requestedDeliveryDate="">
-            <ItemID>
-               <SupplierPartID>P2647</SupplierPartID>
-               <SupplierPartAuxiliaryID>White Flowers (Square) Canvas - 100 x 100cm / WHITE</SupplierPartAuxiliaryID>
-            </ItemID>
-            <ItemDetail>
-               <UnitPrice>
-                  <Money currency="AUD" />
-               </UnitPrice>
-               <Description xml:lang="en-US">White Flowers (Square) Canvas - 100 x 100cm / WHITE</Description>
-               <UnitOfMeasure>EA</UnitOfMeasure>
-               <Classification domain="">the-print-emporium.myshopify.com</Classification>
-               <URL>https://the-print-emporium.myshopify.com/products/white-flowers-square-canvas</URL>
-               <Extrinsic name="quantityMultiplier">1</Extrinsic>
-               <Extrinsic name="Pages">1</Extrinsic>
-               <Extrinsic name="endCustomerOrderID">814826258492</Extrinsic>
-               <Extrinsic name="requestedShipper">DHL Next Day 3:00 pm</Extrinsic>
-               <Extrinsic name="requestedShippingAccount">12345678</Extrinsic>
-            </ItemDetail>
-            <ShipTo>
-               <Address addressID="address1">
-                  <Name xml:lang="en-US">Dora Nitsopoulos</Name>
-                  <PostalAddress name="Paper occasions">
-                     <DeliverTo>Dora Nitsopoulos</DeliverTo>
-                     <Street>202 upper heidelberg road  ivanhoe</Street>
-                     <Street />
-                     <City>Melbourne</City>
-                     <State>VIC</State>
-                     <PostalCode>3079</PostalCode>
-                     <Country isoCountryCode="AU">AU</Country>
-                  </PostalAddress>
-                  <Phone>
-                     <TelephoneNumber>
-                        <Number>03 9497 1370</Number>
-                     </TelephoneNumber>
-                  </Phone>
-               </Address>
-            </ShipTo>
-         </ItemOut>
-      </OrderRequest>
-   </Request>
-</cXML>';
-
     $xml = '<?xml version="1.0" encoding="UTF-8"?>'
             . '<cXML version="1.2.005" xml:lang="en-US" payloadID="f0d4c4cad2768467e774a20328e9fa141106242345@' . $your_name . '.com" timestamp="' . $created_at . '">'
                . '<Header>'
@@ -421,7 +321,10 @@ class Order extends MY_Controller {
                . '</Request>'
             . '</cXML>';
 
-    print_r( $this->sendXmlOverPost($url, $xml) );exit;
+    $code = simplexml_load_string( $this->sendXmlOverPost($url, $xml) )->Response->Status->attributes()->code->__toString();
+    $text = simplexml_load_string( $this->sendXmlOverPost($url, $xml) )->Response->Status->attributes()->text->__toString();
+
+    echo json_encode(array('code' => $code, 'text' => $text));
 
   }
 

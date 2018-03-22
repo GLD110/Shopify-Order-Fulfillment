@@ -286,21 +286,22 @@ function sort( field )
 
 // Sync Order with PMI
 $('.btn_pmi').click(function(){
+  var current_row = $(this);
   $.ajax({
     url: '<?php echo base_url($this->config->item('index_page') . '/order/syncPMI?') ?>'  + 'order_id=' + $(this).attr('data-order-id'),
     type: 'GET'
   }).done(function(data) {
-    console.log( data );
-    if( data == 'success' )
+    console.log( JSON.parse(data)['text'] );
+    if( JSON.parse(data)['code'] == '200' )
     {
-      $(this).text( 'Synced' );
-      $(this).css( 'background', 'grey' );
+      current_row.text( 'Synced' );
+      current_row.css( 'background', 'grey' );
     }
     else
     {
       $(this).text( 'Sync' );
       $(this).css( 'background', 'red' );
-      alert(data);
+      alert(JSON.parse(data)['text']);
     }
   });
 });
