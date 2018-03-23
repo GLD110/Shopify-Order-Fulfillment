@@ -149,7 +149,7 @@ class Order extends MY_Controller {
     $this->load->view('view_footer');
   }
 
-  public function sync( $shop )
+  public function sync( $shop = $this->_default_store )
   {
     $this->load->model( 'Process_model' );
 
@@ -324,8 +324,82 @@ class Order extends MY_Controller {
     $code = simplexml_load_string( $this->sendXmlOverPost($url, $xml) )->Response->Status->attributes()->code->__toString();
     $text = simplexml_load_string( $this->sendXmlOverPost($url, $xml) )->Response->Status->attributes()->text->__toString();
 
+    $this->Order_model->setExported( array( array( 'order_id' => $order_id )) );
+
     echo json_encode(array('code' => $code, 'text' => $text));
 
+  }
+
+  public function shippedNotice()
+  {
+    $this->load->model( 'Process_model' );
+
+    if(empty($shop))
+        $shop = $this->_default_store;
+
+    $this->load->model( 'Shopify_model' );
+    $this->Shopify_model->setStore( $shop, $this->_arrStoreList[$shop]->app_id, $this->_arrStoreList[$shop]->app_secret );
+
+    $shared_secret = $this->config->item('shared_secret');
+    $shippedNotice = $this->input->post();
+
+    $shippedNotice = simplexml_load_string('<?xml version="1.0" encoding="UTF-8"?>
+                        <cXML version="1.2.006" payloadID="bcb664daae21a24a7a1e6f1e8b1a1106348361@YourName.com" xml:lang="enUS" timestamp="2005-01-25 10:22:50">
+                           <Header>
+                              <From>
+                                 <Credential domain="DUNS">
+                                    <Identity>ColorCentric</Identity>
+                                 </Credential>
+                              </From>
+                              <Sender>
+                                 <Credential domain="DUNS">
+                                    <Identity>ColorCentric</Identity>
+                                    <SharedSecret>eMdh78Ki7UjjU9x</SharedSecret>
+                                 </Credential>
+                              </Sender>
+                           </Header>
+                           <Request deploymentMode="production">
+                              <ShipNoticeRequest>
+                                 <ShipNoticeHeader ShipmentID="CC00493_YourName-Test-001-1" noticeDate="2005-01-25" />
+                                 <ShipControl>
+                                    <CarrierIdentifier domain="companyName">DHL 2nd Day</CarrierIdentifier>
+                                    <ShipmentIdentifier>814826258492</ShipmentIdentifier>
+                                 </ShipControl>
+                                 <ShipNoticePortion>
+                                    <OrderReference orderID="814826258492">
+                                       <DocumentReference payloadID="f4cfbcb664daae21a24a7a1e6f1e8b1a1106348361@YourName.com" />
+                                    </OrderReference>
+                                    <ShipNoticeItem quantity="1" lineNumber="1" />
+                                 </ShipNoticePortion>
+                              </ShipNoticeRequest>
+                           </Request>
+                        </cXML>');
+
+    if($shared_secret == $shippedNotice->Header->Sender->Credential->SharedSecret->__toString())
+    {
+      $CarrierIdentifier = $shippedNotice->Request->ShipNoticeRequest->ShipControl->CarrierIdentifier->__toString();
+      $ShipmentIdentifier = $shippedNotice->Request->ShipNoticeRequest->ShipControl->ShipmentIdentifier->__toString();
+      $order_id = $shippedNotice->Request->ShipNoticeRequest->ShipNoticePortion->OrderReference->attributes()->orderID->__toString();
+      $arr_order =  $this->Order_model->getOrderfromId( $order_id );
+      $order = $arr_order[0];
+
+      $action = 'orders/' . $order->orderID . '/fulfillments.json';
+      $fulfillment = array("fulfillment" => array( "tracking_number" => $ShipmentIdentifier, "line_items" => [ "id" => $order_id ] ));
+
+      // Retrive Data from Shop
+      //$fulfillInfo = $this->Shopify_model->accessAPI( $action, $fulfillment, 'POST' );
+      //$this->sync($shop);
+
+      $date = date('Y-m-d H:i:s');
+      $date = str_replace(' ', 'T', (String)$date);
+      $response = '<?xml version="1.0" encoding="UTF-8"?>
+                   <cXML timestamp="' . $date . '" payloadID="281b9b0b-cc28-45f0-9316-812882384b6a">
+                     <Response>
+                      <Status code="200" text="OK" />
+                     </Response>
+                   </cXML> ';
+      echo $response;
+    }
   }
 
   private function sendXmlOverPost($url, $xml) {

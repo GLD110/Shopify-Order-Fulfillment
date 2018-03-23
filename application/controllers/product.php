@@ -75,7 +75,7 @@ class Product extends MY_Controller {
     $this->Product_model->update( $pk, $data );
   }
 
-  public function sync( $shop, $page = 1 )
+  public function sync( $shop = $this->_default_store, $page = 1 )
   {
     $this->load->model( 'Process_model' );
     $this->load->model( 'Collection_model' );

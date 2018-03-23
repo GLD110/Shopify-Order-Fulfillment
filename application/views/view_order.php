@@ -156,7 +156,12 @@ $summary = 'Showing ' . ( $page + 1 ) . ' to ' . ( $page + $sel_page_size > $tot
                     <td><?=$row->created_at ?></td>
                     <td><?=$row->financial_status ?></td>
                     <td><?=$row->sku ?></td>
-                    <td><button type="button" class="btn btn_pmi" style="background: darkgrey" data-order-id="<?=$row->order_id ?>">Sync</button></td>
+                    <?php if($row->exported_status == 0)
+                      echo '<td><button type="button" class="btn btn_pmi" style="background: darkgrey" data-order-id="' . $row->order_id . '">Sync</button></td>';
+                    ?>
+                    <?php if($row->exported_status == 1)
+                      echo '<td><button type="button" class="btn btn_pmi" style="background: grey" data-order-id="' . $row->order_id . '">Synced</button></td>';
+                    ?>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

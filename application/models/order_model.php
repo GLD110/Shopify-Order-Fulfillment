@@ -73,7 +73,7 @@ class Order_model extends Master_model
         $this->_total_count = $query->num_rows();
 
         // Select fields
-        $select = !empty( $arrCondition['is_all'] ) ? '*' : "id, order_id, order_name, email, created_at, customer_name, amount, fulfillment_status, num_products, country, product_id, variant_id, product_name, financial_status, sku, note";
+        $select = !empty( $arrCondition['is_all'] ) ? '*' : "id, orderID, order_id, order_name, email, created_at, customer_name, amount, fulfillment_status, num_products, country, product_id, variant_id, product_name, financial_status, sku, note, exported_status";
         $this->db->select( $select );
 
         // Sort
@@ -156,7 +156,7 @@ class Order_model extends Master_model
     public function setExported($result)
     {
         foreach($result as $line){
-            $this->db->where('order_id', $line->order_id);
+            $this->db->where('order_id', $line['order_id']);
             $this->db->update( $this->_tablename, array('exported_status' => '1'));
         }
     }
@@ -228,6 +228,7 @@ class Order_model extends Master_model
               if(($line_item->product_id != null) && isset($order->billing_address) && isset($order->shipping_address)){
                 // Insert data
                 $data = array(
+                    'orderID' => $order->id,
                     'order_id' => $line_item->id,
                     'customer_name' => $customer_name,
                     'email' => $order->email,
@@ -280,6 +281,7 @@ class Order_model extends Master_model
               if(($line_item->product_id != null) && isset($order->billing_address) && isset($order->shipping_address)){
                 // Insert data
                 $data = array(
+                    'orderID' => $order->id,
                     'order_id' => $line_item->id,
                     'customer_name' => $customer_name,
                     'email' => $order->email,

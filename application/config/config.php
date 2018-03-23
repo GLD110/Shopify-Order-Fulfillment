@@ -515,38 +515,24 @@ $config['MENU_TREE'] = array(
     'role' => '',
   ),
   array(
-    'title' => 'Products - SKUs',
+    'title' => 'Products',
     'link' => 'product',
     'icon' => 'car',
     'role' => 'admin',
-    'items' => array(
-      array(
-        'title' => 'Product',
-        'link' => '',
-        'icon' => 'product-hunt',
-        'role' => '',
-      ),
-      array(
-        'title' => 'SKU Prefix',
-        'link' => 'manageSku',
-        'icon' => 'eye',
-        'role' => '',
-      )
-    ),
   ),
-  array(
+  /*array(
     'title' => 'Output Setting',
     'link' => 'output',
     'icon' => 'plane',
     'role' => '',
-  ),
+  ),*/
   array(
     'title' => 'Orders',
     'link' => 'order',
     'icon' => 'shopping-bag',
     'role' => '',
   ),
-  array(
+  /*array(
     'title' => 'Logs',
     'link' => 'log',
     'icon' => 'file-text-o',
@@ -557,7 +543,7 @@ $config['MENU_TREE'] = array(
     'link' => 'file',
     'icon' => 'file-text-o',
     'role' => '',
-  ),
+  ),*/
 );
 $config['USER_ROLE'] = array(
   'admin' => 'Administrator',
