@@ -127,8 +127,6 @@ class Order extends MY_Controller {
     $data['total_count'] = $this->Order_model->getTotalCount();
     $data['page'] = $page;
 
-    //var_dump($data['query']);exit;
-
     // Define the rendering data
     $data = $data + $this->setRenderData();
 
@@ -149,7 +147,7 @@ class Order extends MY_Controller {
     $this->load->view('view_footer');
   }
 
-  public function sync( $shop = $this->_default_store )
+  public function sync( $shop = '' )
   {
     $this->load->model( 'Process_model' );
 
@@ -203,6 +201,7 @@ class Order extends MY_Controller {
     $your_name = $this->config->item('your_name');
 
     $product_url = 'https://' . $shop_url . '/products/' . $variant->handle;
+    $p_code = $variant->p_code;
 
     $created_at = $order->created_at;
     $created_at = str_replace(' ', 'T', $created_at);
@@ -280,7 +279,7 @@ class Order extends MY_Controller {
                      . '</OrderRequestHeader>'
                      . '<ItemOut lineNumber="1" quantity="' . $order->num_products . '" requestedDeliveryDate="">'
                         . '<ItemID>'
-                           . '<SupplierPartID>P2647</SupplierPartID>'
+                           . '<SupplierPartID>' . $p_code . '</SupplierPartID>'
                            . '<SupplierPartAuxiliaryID>' . $order->product_name . '</SupplierPartAuxiliaryID>'
                         . '</ItemID>'
                         . '<ItemDetail>'
@@ -343,7 +342,7 @@ class Order extends MY_Controller {
     $shared_secret = $this->config->item('shared_secret');
     $shippedNotice = $this->input->post();
 
-    $shippedNotice = simplexml_load_string('<?xml version="1.0" encoding="UTF-8"?>
+    /*$shippedNotice = simplexml_load_string('<?xml version="1.0" encoding="UTF-8"?>
                         <cXML version="1.2.006" payloadID="bcb664daae21a24a7a1e6f1e8b1a1106348361@YourName.com" xml:lang="enUS" timestamp="2005-01-25 10:22:50">
                            <Header>
                               <From>
@@ -366,14 +365,14 @@ class Order extends MY_Controller {
                                     <ShipmentIdentifier>814826258492</ShipmentIdentifier>
                                  </ShipControl>
                                  <ShipNoticePortion>
-                                    <OrderReference orderID="814826258492">
+                                    <OrderReference orderID="201055600658">
                                        <DocumentReference payloadID="f4cfbcb664daae21a24a7a1e6f1e8b1a1106348361@YourName.com" />
                                     </OrderReference>
                                     <ShipNoticeItem quantity="1" lineNumber="1" />
                                  </ShipNoticePortion>
                               </ShipNoticeRequest>
                            </Request>
-                        </cXML>');
+                        </cXML>');*/
 
     if($shared_secret == $shippedNotice->Header->Sender->Credential->SharedSecret->__toString())
     {
@@ -384,11 +383,10 @@ class Order extends MY_Controller {
       $order = $arr_order[0];
 
       $action = 'orders/' . $order->orderID . '/fulfillments.json';
-      $fulfillment = array("fulfillment" => array( "tracking_number" => $ShipmentIdentifier, "line_items" => [ "id" => $order_id ] ));
+      $fulfillment = array("fulfillment" => array( "tracking_number" => $ShipmentIdentifier, "tracking_company" => $CarrierIdentifier, "line_items" => [array( "id" => $order_id )] ));
 
       // Retrive Data from Shop
-      //$fulfillInfo = $this->Shopify_model->accessAPI( $action, $fulfillment, 'POST' );
-      //$this->sync($shop);
+      $fulfillInfo = $this->Shopify_model->accessAPI( $action, $fulfillment, 'POST' );
 
       $date = date('Y-m-d H:i:s');
       $date = str_replace(' ', 'T', (String)$date);
@@ -399,6 +397,7 @@ class Order extends MY_Controller {
                      </Response>
                    </cXML> ';
       echo $response;
+      //$this->sync($shop);
     }
   }
 

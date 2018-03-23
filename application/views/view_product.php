@@ -99,8 +99,8 @@ tr.warning td.new-date{ font-weight:bold; color:green; }
                     <th class = "text-center" >No.</th>
                     <th class = "text-center" style = "width:20%" >SKU</th>
                     <th class = "text-center" style = "width:20%" ><a href = "javascript:sort('title');" >Title</a></th>
+                    <th class = "text-center" style = "width:10%;" >P-code</th>
                     <th class = "text-center" style = "width:30%" >Description</th>
-                    <th class = "text-center" style = "width:10%; display:none;" >Categories</th>
                     <th class = "text-center" >Price</th>
                     <th class = "text-center" >Image</th>
                 </tr>
@@ -114,9 +114,9 @@ tr.warning td.new-date{ font-weight:bold; color:green; }
                <tr class="tbl_view text-center" >
                   <td><?php echo $sno; ?></td>
                   <td class = ''><a href="#" class="text" data-type="text" data-pk="<?= $row->id?>" data-url="<?php echo base_url( $this->config->item('index_page') . '/product/update/sku/' . $row->id ) ?>" data-title="Enter SKU" style="display:none;"><?php echo $row->sku; ?></a><?php echo $row->sku; ?></td>
-                  <td class = 'text-left' ><a href="#" class="text" data-type="text" data-pk="<?= $row->id?>" data-url="<?php echo base_url( $this->config->item('index_page') . '/product/update/title/' . $row->id ) ?>" data-title="Enter Title" style="display:none;"><?php echo $row->title; ?></a><?php echo $row->title; ?></td>
+                  <td class = 'text-left' ><a href="#" class="text" data-type="text" data-pk="<?= $row->id?>" data-url="<?php echo base_url( $this->config->item('index_page') . '/product/update/title/' . $row->id ) ?>" data-title="Enter Title" style="display:none;"><?php echo $row->title . ' ' . $row->variant_title; ?></a><?php echo $row->title . ' ' . $row->variant_title; ?></td>
+                  <td class = '' ><a href="#" class="text" data-type="text" data-pk="<?= $row->id?>" data-url="<?php echo base_url( $this->config->item('index_page') . '/product/update/p_code/' . $row->id ) ?>" data-title="Enter P-code"><?php echo $row->p_code; ?></a></td>
                   <td class = 'text-left' ><?= $prevProductId == $row->product_id ? '' : substr( strip_tags( base64_decode($row->body_html)), 0, 100 ) . '...' ?></td>
-                  <td class = '' style="display:none;"><?=$row->categories ?></td>
                   <td class = '' ><?=$row->price ?></td>
                   <td class = '' ><img src = "<?=$row->image_url ?>" width = "100" ></td>
               </tr>

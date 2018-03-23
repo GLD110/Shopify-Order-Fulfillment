@@ -296,7 +296,6 @@ $('.btn_pmi').click(function(){
     url: '<?php echo base_url($this->config->item('index_page') . '/order/syncPMI?') ?>'  + 'order_id=' + $(this).attr('data-order-id'),
     type: 'GET'
   }).done(function(data) {
-    console.log( JSON.parse(data)['text'] );
     if( JSON.parse(data)['code'] == '200' )
     {
       current_row.text( 'Synced' );

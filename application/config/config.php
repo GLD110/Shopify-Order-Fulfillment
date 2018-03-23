@@ -403,8 +403,10 @@ $config['APP_STATE'] = md5( $config['APP_REDIRECT_URL'] . $config['APP_NAME'] );
 // Private Mode
 $config['PUBLIC_MODE'] = false;
 $config['USE_REDIRECT'] = true;
-$config['PRIVATE_SHOP'] = 'the-print-emporium.myshopify.com';
-$config['PRIVATE_API_URL'] = 'https://c5304620c325fdf4cb204ed3a8243a57:f1ebea462dd2da86f415132f62fa7118@the-print-emporium.myshopify.com/admin/';   //Dev Shop
+//$config['PRIVATE_SHOP'] = 'the-print-emporium.myshopify.com';
+//$config['PRIVATE_API_URL'] = 'https://c5304620c325fdf4cb204ed3a8243a57:f1ebea462dd2da86f415132f62fa7118@the-print-emporium.myshopify.com/admin/';   //Dev Shop
+$config['PRIVATE_SHOP'] = 'diana4545.myshopify.com';
+$config['PRIVATE_API_URL'] = 'https://b7513b8d1e9c632dbd0391ea7a1b2384:d05a5a2cf72cb992051ac0cf09cdafef@the-print-emporium.myshopify.com/admin/';   //Dev Shop
 
 // PMI Credentials
 $config['pmi_path']  =  'http://orders.printernet.com:8080/emporiumtest/default.emporiumtest';
@@ -508,12 +510,12 @@ $config['MENU_TREE'] = array(
       )
     ),
   ),
-  array(
+  /*array(
     'title' => 'Stores',
     'link' => 'store',
     'icon' => 'building',
     'role' => '',
-  ),
+  ),*/
   array(
     'title' => 'Products',
     'link' => 'product',

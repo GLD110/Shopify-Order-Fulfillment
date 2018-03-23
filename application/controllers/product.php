@@ -69,13 +69,14 @@ class Product extends MY_Controller {
     {
         case 'type' : $data['type'] = $this->input->post('value'); break;
         case 'title' : $data['title'] = $this->input->post('value'); break;
+        case 'p_code' : $data['p_code'] = $this->input->post('value'); break;
         case 'sku' : $data['sku'] = $this->input->post('value'); break;
         case 'item_per_square' : $data['item_per_square'] = str_replace( ',', '.', $this->input->post('value') ); break;
     }
     $this->Product_model->update( $pk, $data );
   }
 
-  public function sync( $shop = $this->_default_store, $page = 1 )
+  public function sync( $shop = '', $page = 1 )
   {
     $this->load->model( 'Process_model' );
     $this->load->model( 'Collection_model' );
@@ -86,34 +87,34 @@ class Product extends MY_Controller {
     $this->load->model( 'Shopify_model' );
     $this->Shopify_model->setStore( $shop, $this->_arrStoreList[$shop]->app_id, $this->_arrStoreList[$shop]->app_secret );
 
-    // Get the lastest day of collection
-    $last_day = $this->Collection_model->getLastUpdateDate();
-    $last_day = str_replace(' ', 'T', $last_day);
-
-    $param = 'limit=250';
-    if( $last_day != '' ) $param .= '&updated_at_min=' . $last_day;
-    //$action = 'custom_collections.json?' . $param;
-
-    $action = 'smart_collections.json';
-
-    // Retrive Data from Shop
-    $collectionInfo = $this->Shopify_model->accessAPI( $action );
-
-    // Store to database
-    if( isset($collectionInfo->smart_collections) && is_array($collectionInfo->smart_collections) )
-    {
-      foreach( $collectionInfo->smart_collections as $collection )
-      {
-        /*$collection_productIDs = $this->Shopify_model->accessAPI( 'products.json?fields=id&collection_id=' . $collection->id );
-        $c_pIDs = '';
-        foreach($collection_productIDs->products as $c_p)
-        {
-          $c_pIDs = $c_pIDs . ',' . $c_p->id;
-        }
-        $collection->product_ids = $c_pIDs;*/
-        $this->Collection_model->addCollection( $collection );
-      }
-    }
+    // // Get the lastest day of collection
+    // $last_day = $this->Collection_model->getLastUpdateDate();
+    // $last_day = str_replace(' ', 'T', $last_day);
+    //
+    // $param = 'limit=250';
+    // if( $last_day != '' ) $param .= '&updated_at_min=' . $last_day;
+    // //$action = 'custom_collections.json?' . $param;
+    //
+    // $action = 'smart_collections.json';
+    //
+    // // Retrive Data from Shop
+    // $collectionInfo = $this->Shopify_model->accessAPI( $action );
+    //
+    // // Store to database
+    // if( isset($collectionInfo->smart_collections) && is_array($collectionInfo->smart_collections) )
+    // {
+    //   foreach( $collectionInfo->smart_collections as $collection )
+    //   {
+    //     /*$collection_productIDs = $this->Shopify_model->accessAPI( 'products.json?fields=id&collection_id=' . $collection->id );
+    //     $c_pIDs = '';
+    //     foreach($collection_productIDs->products as $c_p)
+    //     {
+    //       $c_pIDs = $c_pIDs . ',' . $c_p->id;
+    //     }
+    //     $collection->product_ids = $c_pIDs;*/
+    //     $this->Collection_model->addCollection( $collection );
+    //   }
+    // }
 
     // Get the lastest day
     $last_day = $this->Product_model->getLastUpdateDate();
