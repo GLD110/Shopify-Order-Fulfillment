@@ -61,7 +61,7 @@ class Order_model extends Master_model
         if( !empty( $arrCondition['product_name'] ) ) $where["product_name LIKE '%" . str_replace( "'", "\\'", $arrCondition['product_name'] ) . "%'"] = '';
         if( !empty( $arrCondition['customer_name'] ) ) $where["customer_name LIKE '%" . str_replace( "'", "\\'", $arrCondition['customer_name'] ) . "%'"] = '';
         if( !empty( $arrCondition['order_name'] ) ) $where["order_name LIKE '%" . str_replace( "'", "\\'", $arrCondition['order_name'] ) . "%'"] = '';
-        if( !empty( $arrCondition['created_at'] ) ) $where["created_at LIKE '" . str_replace( "'", "\\'", $arrCondition['created_at'] ) . "%'"] = '';
+        //if( !empty( $arrCondition['created_at'] ) ) $where["created_at LIKE '" . str_replace( "'", "\\'", $arrCondition['created_at'] ) . "%'"] = '';
 
         // Get the count of records
         foreach( $where as $key => $val )
@@ -112,7 +112,7 @@ class Order_model extends Master_model
         $where['shop'] = $this->_shop;
         if( !empty( $arrCondition['customer_name'] ) ) $where["customer_name LIKE '%" . str_replace( "'", "\\'", $arrCondition['customer_name'] ) . "%'"] = '';
         if( !empty( $arrCondition['order_name'] ) ) $where["order_name LIKE '%" . str_replace( "'", "\\'", $arrCondition['order_name'] ) . "%'"] = '';
-        if( !empty( $arrCondition['created_at'] ) ) $where["created_at LIKE '" . str_replace( "'", "\\'", $arrCondition['created_at'] ) . "%'"] = '';
+        //if( !empty( $arrCondition['created_at'] ) ) $where["created_at LIKE '" . str_replace( "'", "\\'", $arrCondition['created_at'] ) . "%'"] = '';
 
         //Get prefix from sku
         $this->db->select ( 'prefix' );

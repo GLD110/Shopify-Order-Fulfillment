@@ -71,7 +71,7 @@ $summary = 'Showing ' . ( $page + 1 ) . ' to ' . ( $page + $sel_page_size > $tot
               &nbsp;&nbsp;
               <label>Page Size</label>&nbsp;:&nbsp;
               <input type = 'text' class="form-control input-group-sm" id = 'sel_page_size' name = 'sel_page_size' value = "<?PHP echo $sel_page_size; ?>" style = "width:70px;" >&nbsp;&nbsp;&nbsp;&nbsp;
-              <div class="form-group date">
+              <div class="form-group date" style="display: none;">
                 <label> Date: </label>&nbsp;&nbsp;
                 <div class="input-group">
                     <input type="text" class="form-control" id="rangepicker4" name = "sel_created_at" value="<?PHP echo $sel_created_at; ?>"/>
