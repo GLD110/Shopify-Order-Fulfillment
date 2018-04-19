@@ -63,6 +63,9 @@ class Product extends MY_Controller {
 
   public function update( $type, $pk )
   {
+    // Check the login
+    $this->is_logged_in();
+
     $data = array();
 
     switch( $type )
@@ -70,10 +73,21 @@ class Product extends MY_Controller {
         case 'type' : $data['type'] = $this->input->post('value'); break;
         case 'title' : $data['title'] = $this->input->post('value'); break;
         case 'p_code' : $data['p_code'] = $this->input->post('value'); break;
+        case 'img_resource' : $data['img_resource'] = $this->input->post('value'); break;
         case 'sku' : $data['sku'] = $this->input->post('value'); break;
         case 'item_per_square' : $data['item_per_square'] = str_replace( ',', '.', $this->input->post('value') ); break;
     }
-    $this->Product_model->update( $pk, $data );
+    if($type == 'img_resource')
+    {
+      $this->Product_model->update_resources($pk, $data);
+    }
+    if($type == 'p_code')
+    {
+      $this->Product_model->update_pcodes($pk, $data);
+    }
+    else{
+      $this->Product_model->update( $pk, $data );
+    }
   }
 
   public function sync( $shop = '', $page = 1 )

@@ -184,6 +184,19 @@ class Order extends MY_Controller {
     echo 'success';
   }
 
+  public function update( $type, $pk )
+  {
+    $data = array();
+
+    switch( $type )
+    {
+        case 'note' : $data['note'] = $this->input->post('value'); break;
+        case 'shipping_option' : $data['shipping_option'] = $this->input->post('shipping_option'); break;
+    }
+
+    $this->Order_model->update( $pk, $data );
+  }
+
   public function syncPMI()
   {
     $order_id = $this->input->get('order_id');
@@ -221,7 +234,7 @@ class Order extends MY_Controller {
       $tax_rate = $shipping_lines->tax_lines['rate'];
 
     $xml = '<?xml version="1.0" encoding="UTF-8"?>'
-            . '<cXML version="1.2.005" xml:lang="en-US" payloadID="f0d4c4cad2768467e774a20328e9fa141106242345@' . $your_name . '.com" timestamp="' . $created_at . '">'
+            . '<cXML version="1.2.005" xml:lang="en-US" payloadID="' . $order_id . '@' . $your_name . '.com" timestamp="' . $created_at . '">'
                . '<Header>'
                   . '<From>'
                      . '<Credential domain="DUNS">'
@@ -289,11 +302,11 @@ class Order extends MY_Controller {
                            . '<Description xml:lang="en-US">' . $order->product_name . '</Description>'
                            . '<UnitOfMeasure>EA</UnitOfMeasure>'
                            . '<Classification domain="">' . $shop_url . '</Classification>'
-                           . '<URL>' . $product_url . '</URL>'
+                           . '<URL>' . $variant->img_resource . '</URL>'
                            . '<Extrinsic name="quantityMultiplier">1</Extrinsic>'
                            . '<Extrinsic name="Pages">1</Extrinsic>'
                            . '<Extrinsic name="endCustomerOrderID">' . $order->order_id . '</Extrinsic>'
-                           . '<Extrinsic name="requestedShipper">DHL Next Day 3:00 pm</Extrinsic>'
+                           . '<Extrinsic name="requestedShipper">' . $order->shipping_option . '</Extrinsic>'
                            . '<Extrinsic name="requestedShippingAccount">12345678</Extrinsic>'
                         . '</ItemDetail>'
                         . '<ShipTo>'

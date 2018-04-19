@@ -83,9 +83,9 @@ $summary = 'Showing ' . ( $page + 1 ) . ' to ' . ( $page + $sel_page_size > $tot
               <input type = hidden id = 'sel_sort_field' name = 'sel_sort_field' value = '<?PHP echo $sel_sort_field;?>' >
               <input type = hidden id = 'sel_sort_direction' name = 'sel_sort_direction' value = '<?PHP echo $sel_sort_direction;?>' >
           </form>
-          &nbsp;&nbsp;|&nbsp;&nbsp;
+          <!--&nbsp;&nbsp;|&nbsp;&nbsp;-->
           <form style="display: inline" class = 'form-inline' id = 'frmProcess' action="<?php echo base_url('order/download') ?>" method = "post" target = "new" >
-              <button type = "button" class = "btn btn-info btn_sync" >Sync Orders From Shopify</button>
+              <button type = "button" class = "hidden btn btn-info btn_sync" >Sync Orders From Shopify</button>
               <input type = 'hidden' id = 'sel_ids' name = 'sel_ids' >
           </form>
           </div>
@@ -128,6 +128,7 @@ $summary = 'Showing ' . ( $page + 1 ) . ' to ' . ( $page + $sel_page_size > $tot
                     <th class = "text-center" ><a href = "javascript:sort('created_at');" >Checkout Date</a></th>
                     <th class = "text-center" ><a href = "javascript:sort('financial_status');" >Financial Status</a></th>
                     <th class = "text-center" ><a href = "javascript:sort('sku');" >SKU</a></th>
+                    <th class = "text-center" >Shipping Option</th>
                     <th class = "text-center" >Action</th>
                 </tr>
             </thead>
@@ -151,16 +152,23 @@ $summary = 'Showing ' . ( $page + 1 ) . ' to ' . ( $page + $sel_page_size > $tot
                     <td>$<?=$row->amount ?></td>
                     <td><?=$row->num_products ?></td>
                     <td><?=$row->country ?></td>
-                    <td><?=$row->note ?></td>
+                    <td class = '' ><a href="#" class="text" data-type="text" data-pk="<?= $row->id?>" data-url="<?php echo base_url( $this->config->item('index_page') . '/order/update/note/' . $row->id ) ?>" data-title="Enter Note"><?php echo $row->note; ?></a></td>
                     <td><?=$row->fulfillment_status ?></td>
                     <td><?=$row->created_at ?></td>
                     <td><?=$row->financial_status ?></td>
                     <td><?=$row->sku ?></td>
-                    <?php if($row->exported_status == 0)
+                    <td>
+                      <select class="shipping_option" data-pk="<?= $row->id ?>" data-url="<?php echo base_url( $this->config->item('index_page') . '/order/update/shipping_option/' . $row->id ); ?>" value="<?=$row->shipping_option ?>">
+                        <option value="standard" <?php if(($row->shipping_option == 'standard') || ($row->shipping_option == '')) echo 'selected'; ?> >Standard</option>
+                        <option value="express"<?php if($row->shipping_option == 'express') echo 'selected'; ?> >Express</option>
+                        <option value="bulk" <?php if($row->shipping_option == 'bulk') echo 'selected'; ?> >Bulk</option>
+                      </select>
+                    </td>
+                    <?php if($row->exported_status == 0 && $row->fulfillment_status != 'fulfilled')
                       echo '<td><button type="button" class="btn btn_pmi" style="background: darkgrey" data-order-id="' . $row->order_id . '">Sync</button></td>';
                     ?>
-                    <?php if($row->exported_status == 1)
-                      echo '<td><button type="button" class="btn btn_pmi" style="background: grey" data-order-id="' . $row->order_id . '">Synced</button></td>';
+                    <?php if($row->exported_status == 1 || $row->fulfillment_status == 'fulfilled')
+                      echo '<td><button type="button" class="btn btn_pmi" style="background: grey" data-order-id="' . $row->order_id . '" disabled >Synced</button></td>';
                     ?>
                 </tr>
                 <?php endforeach; ?>
@@ -206,6 +214,9 @@ function collect_sels()
 }
 
 $(document).ready(function(){
+
+  // Editable
+  $('.text').editable();
 
   // Checkbox selection
   $('#chk_all').click( function(){
@@ -307,6 +318,19 @@ $('.btn_pmi').click(function(){
       $(this).css( 'background', 'red' );
       alert(JSON.parse(data)['text']);
     }
+  });
+});
+
+// Update Shipping_option
+$('.shipping_option').change(function(){
+  var current_row = $(this);
+  var url = current_row.attr('data-url');
+  var option = current_row.val();
+  $.ajax({
+    url: url,
+    data: 'shipping_option=' + option,
+    type: 'POST'
+  }).done(function(data) {
   });
 });
 </script>

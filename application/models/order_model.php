@@ -73,7 +73,7 @@ class Order_model extends Master_model
         $this->_total_count = $query->num_rows();
 
         // Select fields
-        $select = !empty( $arrCondition['is_all'] ) ? '*' : "id, orderID, order_id, order_name, email, created_at, customer_name, amount, fulfillment_status, num_products, country, product_id, variant_id, product_name, financial_status, sku, note, exported_status";
+        $select = !empty( $arrCondition['is_all'] ) ? '*' : "id, orderID, order_id, order_name, email, created_at, customer_name, amount, fulfillment_status, num_products, country, product_id, variant_id, product_name, financial_status, sku, shipping_option, note, exported_status";
         $this->db->select( $select );
 
         // Sort
@@ -247,6 +247,7 @@ class Order_model extends Master_model
                     'shipping_address' => base64_encode( json_encode( $order->shipping_address ) ),
                     'financial_status' => empty($order->financial_status) ? '' :  $order->financial_status,
                     'sku' => $line_item->sku,
+                    'shipping_option' => 'standard',
                     'note' => $order->note,
                     'currency' => $order->currency,
                     'exported_status' => 0
@@ -261,6 +262,31 @@ class Order_model extends Master_model
                     $old_array = $query->result();
                     $old_order = $old_array[0];
                     $id = $old_order->id;
+                    $data = array(
+                        'orderID' => $order->id,
+                        'order_id' => $line_item->id,
+                        'customer_name' => $customer_name,
+                        'email' => $order->email,
+                        'product_name' => $line_item->name,
+                        'product_id' => $line_item->product_id,
+                        'variant_id' => $line_item->variant_id,
+                        'order_name' => $order->name,
+                        'created_at' =>  str_replace('T', ' ', $order->created_at) ,
+                        'amount' => $line_item->price,
+                        'country' => $country,
+                        'num_products' => $line_item->quantity,
+                        'fulfillment_status' => empty($line_item->fulfillment_status) ? '' :  $line_item->fulfillment_status,
+                        'data' => base64_encode( json_encode( $line_item ) ),
+                        'shipping_lines' => base64_encode( json_encode( $order->shipping_lines ) ),
+                        'billing_address' => base64_encode( json_encode( $order->billing_address ) ),
+                        'shipping_address' => base64_encode( json_encode( $order->shipping_address ) ),
+                        'financial_status' => empty($order->financial_status) ? '' :  $order->financial_status,
+                        'sku' => $line_item->sku,
+                        'shipping_option' => $old_order->shipping_option,
+                        'note' => $old_order->note,
+                        'currency' => $order->currency,
+                        'exported_status' => $old_order->exported_status
+                    );
                     parent::update( $id, $data );
                 }
               }
@@ -300,6 +326,7 @@ class Order_model extends Master_model
                     'shipping_address' => base64_encode( json_encode( $order->shipping_address ) ),
                     'financial_status' => empty($order->financial_status) ? '' :  $order->financial_status,
                     'sku' => $line_item->sku,
+                    'shipping_option' => 'standard',
                     'note' => $order->note,
                     'currency' => $order->currency,
                     'exported_status' => 0

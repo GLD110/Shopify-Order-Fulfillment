@@ -68,7 +68,7 @@ tr.warning td.new-date{ font-weight:bold; color:green; }
 
                 <button type = "submit" class = "btn btn-info" ><i class="glyphicon glyphicon-search" ></i></button>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button type = "button" class = "btn btn-warning btn_sync" >Sync products</button>
+                <button type = "button" class = "hidden btn btn-warning btn_sync" >Sync products</button>
 
                 <input type = hidden id = 'sel_sort_field' name = 'sel_sort_field' value = '<?PHP echo $sel_sort_field;?>' >
                 <input type = hidden id = 'sel_sort_direction' name = 'sel_sort_direction' value = '<?PHP echo $sel_sort_direction;?>' >
@@ -102,6 +102,7 @@ tr.warning td.new-date{ font-weight:bold; color:green; }
                     <th class = "text-center" style = "width:10%;" >P-code</th>
                     <th class = "text-center" style = "width:30%" >Description</th>
                     <th class = "text-center" >Price</th>
+                    <th class = "text-center" >Image Resource</th>
                     <th class = "text-center" >Image</th>
                 </tr>
             </thead>
@@ -118,6 +119,7 @@ tr.warning td.new-date{ font-weight:bold; color:green; }
                   <td class = '' ><a href="#" class="text" data-type="text" data-pk="<?= $row->id?>" data-url="<?php echo base_url( $this->config->item('index_page') . '/product/update/p_code/' . $row->id ) ?>" data-title="Enter P-code"><?php echo $row->p_code; ?></a></td>
                   <td class = 'text-left' ><?= $prevProductId == $row->product_id ? '' : substr( strip_tags( base64_decode($row->body_html)), 0, 100 ) . '...' ?></td>
                   <td class = '' ><?=$row->price ?></td>
+                  <td class = '' ><a href="#" class="text" data-type="text" data-pk="<?= $row->id?>" data-url="<?php echo base_url( $this->config->item('index_page') . '/product/update/img_resource/' . $row->id ) ?>" data-title="Enter Resource"><?php echo $row->img_resource; ?></a></td>
                   <td class = '' ><img src = "<?=$row->image_url ?>" width = "100" ></td>
               </tr>
               <?php

@@ -139,9 +139,26 @@ class Product_model extends Master_model
           $image_url = $product->image->src;
         }
 
+        $img_resource = '';
+        $p_code = '';
+
         // Remove the existing product
         if( in_array( '_' . $variant->id, array_keys( $this->_arrProductKey )))
         {
+          $this->db->select( '*' );
+          $this->db->limit( 1 );
+          $this->db->where( 'id', $this->_arrProductKey[ '_' . $variant->id ] );
+
+          $query = $this->db->get( $this->_tablename );
+
+          if( $query->num_rows() > 0 )
+          {
+              $res = $query->result();
+
+              $img_resource = $res[0]->img_resource;
+              $p_code = $res[0]->p_code;
+          }
+
           $this->delete( $this->_arrProductKey[ '_' . $variant->id ] );
         }
 
@@ -160,6 +177,8 @@ class Product_model extends Master_model
           'updated_at' => date( $this->config->item('CONST_DATE_FORMAT'), strtotime($variant->updated_at)),
           'is_exist' => 1,
           'image_url' => $image_url,
+          'img_resource' => $img_resource,
+          'p_code' => $p_code,
           'data' => base64_encode( json_encode( $variant ) ),
         );
 
@@ -193,6 +212,56 @@ class Product_model extends Master_model
       }
 
       return $returnObj;
+    }
+
+    // Update Img_resources
+    public function update_resources( $ID, $data )
+    {
+
+      $return = '';
+
+      $this->db->select( 'sku' );
+      $this->db->limit( 1 );
+      $this->db->where( 'id', $ID );
+
+      $query = $this->db->get( $this->_tablename );
+
+      if( $query->num_rows() > 0 )
+      {
+          $res = $query->result();
+
+          $return = $res[0]->sku;
+      }
+
+      $sql = "UPDATE `product` SET `img_resource` = '". $data['img_resource'] ."' WHERE `sku` = '". $return ."'";
+
+      $this->db->query($sql);
+      return true;
+    }
+
+    // Update P_codes
+    public function update_pcodes( $ID, $data )
+    {
+
+      $return = '';
+
+      $this->db->select( 'variant_title' );
+      $this->db->limit( 1 );
+      $this->db->where( 'id', $ID );
+
+      $query = $this->db->get( $this->_tablename );
+
+      if( $query->num_rows() > 0 )
+      {
+          $res = $query->result();
+
+          $return = $res[0]->variant_title;
+      }
+
+      $sql = "UPDATE `product` SET `p_code` = '". $data['p_code'] ."' WHERE `variant_title` = '". $return ."'";
+
+      $this->db->query($sql);
+      return true;
     }
 
     // Get variant ID from SKU

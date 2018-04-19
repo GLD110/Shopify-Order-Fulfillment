@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE | Dashboard</title>
+    <title>Printemporium App | Dashboard</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.5 -->
@@ -26,10 +26,10 @@
     <!-- Date Picker -->
     <link rel="stylesheet" href="<?PHP echo base_url(); ?>asset/adminlte/plugins/datepicker/datepicker3.css">
     <!-- Daterange picker -->
-    <link rel="stylesheet" href="<?PHP echo base_url(); ?>asset/adminlte/plugins/daterangepicker/daterangepicker-bs3.css">   
+    <link rel="stylesheet" href="<?PHP echo base_url(); ?>asset/adminlte/plugins/daterangepicker/daterangepicker-bs3.css">
     <link href="<?PHP echo base_url(); ?>asset/vendors/daterangepicker/css/daterangepicker.css" rel="stylesheet" type="text/css" />
     <link href="<?PHP echo base_url(); ?>asset/vendors/datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
-    <link href="<?PHP echo base_url(); ?>asset/vendors/clockface/css/clockface.css" rel="stylesheet" type="text/css" />      
+    <link href="<?PHP echo base_url(); ?>asset/vendors/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="<?PHP echo base_url(); ?>asset/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     <!-- Bootstrap Color Picker -->
@@ -50,14 +50,14 @@
     <!-- Bootstrap Multiselect -->
     <script src="<?php echo base_url() ?>asset/bootstrap/multiselect/bootstrap-multiselect.js"></script>
     <link rel="stylesheet" href="<?php echo base_url() ?>asset/bootstrap/multiselect/bootstrap-multiselect.css">
-    
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
+
     <script>
     (function ( $ ) {
         // Button Init
@@ -68,9 +68,9 @@
             localStorage.setItem( name + '_error', JSON.stringify(error_state) );
         }
 
-        // Button Pending    
+        // Button Pending
         $.fn.btn_action = function( name, action ){
-            
+
             // remove the init classes
             var old_state;
             if( action == 'pending')
@@ -87,15 +87,15 @@
                 var old_state = JSON.parse(localStorage.getItem( name + '_' + 'pending' ) );
                 $(this).removeClass( old_state.class );
             }
-            
+
             // Add the success classes
             var new_state = JSON.parse(localStorage.getItem( name + '_' + action ) );
             $(this).addClass( new_state.class );
-            
+
             // Add HTML
             $(this).html( new_state.caption );
         }
-    }( jQuery ));    
+    }( jQuery ));
     </script>
   </head>
   <body class="hold-transition skin-blue sidebar-mini">
@@ -111,7 +111,7 @@
           <span class="logo-lg"><b>Admin</b>LTE</span>
         </a>
         <?php endif; ?>
-        
+
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation" <?php if( $this->config->item('MENU_DIRECTION') != 'left' ): ?>style = "margin-left:0px;"<?php endif; ?> >
           <!-- Sidebar toggle button-->
@@ -126,14 +126,14 @@
               <i class="fa fa-<?= $menu_item['icon'] ?>" ></i>&nbsp;<span><?= $menu_item['title'] ?></span>
             </a>
             <?php endforeach; ?>
-            
+
             <style>
             .main-header .sidebar-toggle:before{
               content : '';
             }
             </style>
           <?php endif; ?>
-          
+
           <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
               <!-- User Account: style can be found in dropdown.less -->
@@ -170,7 +170,7 @@
           </div>
         </nav>
       </header>
-      
+
       <?php if( $this->config->item('MENU_DIRECTION') == 'left' ): ?>
       <!-- Left side column. contains the logo and sidebar -->
       <aside class="main-sidebar">
@@ -186,11 +186,11 @@
               <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
           </div>
-          
+
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
-            
+
             <?php foreach( $this->config->item('MENU_TREE') as $menu_item ): ?>
               <?php $has_submenu  = ( isset( $menu_item['items'] ) && is_array($menu_item['items']) ) ? true : false; ?>
               <?php if( $menu_item['role'] == '' || $this->session->userdata( 'role' ) == $menu_item['role'] ): ?>
@@ -209,17 +209,17 @@
                     <li class="<?PHP if( $this->uri->segment(2) == $sub_menu_item['link'] ) echo 'active'; ?>"><a href="<?PHP echo base_url( $menu_item['link'] . '/' . $sub_menu_item['link'] ); ?>"><i class="fa fa-<?= $sub_menu_item['icon'] ?>"></i>&nbsp;<?= $sub_menu_item['title'] ?></a></li>
                   <?php endforeach; ?>
                 </ul>
-                <?php endif; ?>                
+                <?php endif; ?>
               </li>
               <?php endif; ?>
             <?php endforeach; ?>
-            
+
           </ul>
         </section>
         <!-- /.sidebar -->
       </aside>
       <?php endif; ?>
-      
+
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper" <?php if( $this->config->item('MENU_DIRECTION') != 'left' ): ?>style = "margin-left:0px;"<?php endif; ?> >
         <!-- Content Header (Page header) -->
