@@ -215,6 +215,13 @@ class Order extends MY_Controller {
 
     $product_url = 'https://' . $shop_url . '/products/' . $variant->handle;
     $p_code = $variant->p_code;
+    $img_resource = $variant->img_resource;
+    if($variant->img_resource == '')
+      $img_resource = $product_url;
+
+    $shipping_option = $order->shipping_option;
+    if($order->shipping_option == '')
+      $shipping_option = 'standard';
 
     $created_at = $order->created_at;
     $created_at = str_replace(' ', 'T', $created_at);
@@ -302,11 +309,11 @@ class Order extends MY_Controller {
                            . '<Description xml:lang="en-US">' . $order->product_name . '</Description>'
                            . '<UnitOfMeasure>EA</UnitOfMeasure>'
                            . '<Classification domain="">' . $shop_url . '</Classification>'
-                           . '<URL>' . $variant->img_resource . '</URL>'
+                           . '<URL>' . $img_resource . '</URL>'
                            . '<Extrinsic name="quantityMultiplier">1</Extrinsic>'
                            . '<Extrinsic name="Pages">1</Extrinsic>'
                            . '<Extrinsic name="endCustomerOrderID">' . $order->order_id . '</Extrinsic>'
-                           . '<Extrinsic name="requestedShipper">' . $order->shipping_option . '</Extrinsic>'
+                           . '<Extrinsic name="requestedShipper">' . $shipping_option . '</Extrinsic>'
                            . '<Extrinsic name="requestedShippingAccount">12345678</Extrinsic>'
                         . '</ItemDetail>'
                         . '<ShipTo>'
@@ -333,10 +340,13 @@ class Order extends MY_Controller {
                . '</Request>'
             . '</cXML>';
 
-    $code = simplexml_load_string( $this->sendXmlOverPost($url, $xml) )->Response->Status->attributes()->code->__toString();
-    $text = simplexml_load_string( $this->sendXmlOverPost($url, $xml) )->Response->Status->attributes()->text->__toString();
+    $simplexml = $this->sendXmlOverPost($url, $xml);
+    $code = simplexml_load_string( $simplexml )->Response->Status->attributes()->code->__toString();
+    $text = simplexml_load_string( $simplexml )->Response->Status->attributes()->text->__toString();
 
     $this->Order_model->setExported( array( array( 'order_id' => $order_id )) );
+
+    //echo json_encode(array('code' => '200', 'text' => 'Success'));
 
     echo json_encode(array('code' => $code, 'text' => $text));
 
